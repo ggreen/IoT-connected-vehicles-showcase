@@ -2,16 +2,19 @@ package com.vmware.tanzu.data.IoT.vehicles.generator
 
 import com.vmware.tanzu.data.IoT.vehicles.domains.Vehicle
 import com.vmware.tanzu.data.IoT.vehicles.messaging.vehicle.publisher.VehicleSender
-import org.apache.commons.logging.LogFactory
-import org.springframework.stereotype.Component
+import nyla.solutions.core.operations.performance.stats.ThroughputStatistics
+//import org.apache.commons.logging.LogFactory
+//import org.springframework.stereotype.Component
+import java.time.LocalDateTime
 
 /**
+ * Generate GPS for a vehicle to simulate a parallel threaded ride.
  * @author Gregory Green
  */
-@Component
-class VehicleRiderRouteSimulator : VehicleRider
+//@Component
+class VehicleRiderRouteSimulator(
+    private val throughPutStats: ThroughputStatistics = ThroughputStatistics()) : VehicleRider
 {
-    private val logger = LogFactory.getLog(VehicleRiderRouteSimulator::class.java)
 
     /**
      * Start multi-threading send generated vehicle information
@@ -25,10 +28,13 @@ class VehicleRiderRouteSimulator : VehicleRider
 
         var runnable : Runnable  = Runnable {
 
+            var startTime = LocalDateTime.now();
+
             while(true)
             {
 
-                logger.info("START Processing  vehicle: ${vehicle.vin} messageCount:${messageCount}")
+                println("START Processing  vehicle: ${vehicle.vin} messageCount:${messageCount}");
+
 
                 try {
                     sender.send(vehicle);
@@ -41,13 +47,15 @@ class VehicleRiderRouteSimulator : VehicleRider
                         if (delayMs > 0)
                             Thread.sleep(delayMs);
                     }
-                    logger.info("END Processing vehicle: ${vehicle.vin} messageCount:${messageCount}")
+
+                    throughPutStats.increment((messageCount+1).toLong());
+
+                    println("END Processing ~ throughput:${throughPutStats.throughputPerSecond(startTime, LocalDateTime.now())} msg/sec vehicle: ${vehicle.vin} messageCount:${messageCount}")
 
                 } catch (exception: RuntimeException) {
                     exception.printStackTrace();
                 }
 
-                System.gc();
             }
         }
 

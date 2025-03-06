@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run:  vehicle-sink
+  name:  vehicle-sink
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name:  vehicle-sink
+  template:
+    metadata:
+      labels:
+        name:  vehicle-sink
+    spec:
+      containers:
+        - env:
+            - name: server.port
+              value: "8080"
+            - name: spring.rabbitmq.host
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: host
+            - name: spring_rabbitmq_username
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key:  username
+            - name: spring_rabbitmq_password
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-default-user
+                  key: password
+            - name: spring.cloud.stream.bindings.vehicleGemFireSink-in-0.consumer.concurrency
+              value: "5"
+            - name: spring.data.gemfire.pool.default.locators
+              valueFrom:
+                configMapKeyRef:
+                  name: gemfire-config
+                  key: locators
+            - name: spring.data.gemfire.pool.locators
+              valueFrom:
+                configMapKeyRef:
+                  name: gemfire-config
+                  key: locators
+          image: cloudnativedata/vehicle-sink:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          #          imagePullPolicy: Always
+          name: vehicle-sink

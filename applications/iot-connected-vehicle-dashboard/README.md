@@ -1,6 +1,6 @@
 #
 
-http://localhost:7000/updates
+http://localhost:7010
 
 
 
@@ -26,4 +26,14 @@ docker tag iot-connected-vehicle-dashboard:0.0.2-SNAPSHOT nyla/iot-connected-veh
 docker login
 docker push nyla/iot-connected-vehicle-dashboard:0.0.2-SNAPSHOT
 
+```
+
+
+Starting GemFire
+
+
+export GEMFIRE_HOME=/Users/devtools/repositories/IMDG/gemfire/vmware-gemfire-10.0.2
+
+```shell
+./deployments/local/dataServices/gemfire/start.sh
 ```
