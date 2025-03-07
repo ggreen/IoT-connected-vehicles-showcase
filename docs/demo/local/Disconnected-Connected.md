@@ -61,17 +61,29 @@ java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHO
 open http://localhost:7013
 ```
 
-Install/Start SCDF
+
+Start Vehicle Dashboard
+
+```shell
+java -jar applications/vehicle-dashboard/target/vehicle-dashboard-0.0.1-SNAPSHOT.jar --spring.profiles.active=gemfire
+```
+
+Open dashboard
+
+```shell
+open http://localhost:7010
+```
+
+
+
+## Install/Start SCDF
 
 ```shell
 ./deployments/local/spring/scdf/scdf-install.sh 
 ```
 
 -----------------------------------
-# SCDF 
-
-
-
+# SCDF
 
 ## SCDF Setup
 
@@ -126,8 +138,14 @@ open http://localhost:7010
 
 
 
-Start Gfsh
+----------------
 
-```shell
-docker exec -it gf-locator  gfsh
-```
+# Testing 
+
+
+Tight light on/off to trigger event to save an oil order to Postgres
+
+![turn-light.png](image/turn-light.png)
+
+
+
