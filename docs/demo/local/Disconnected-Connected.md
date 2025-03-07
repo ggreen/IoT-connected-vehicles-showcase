@@ -4,6 +4,7 @@
 - Apache Maven 3.9.1 or higher 
 - Docker
 - Java 17
+- [wget](https://www.gnu.org/software/wget/)
 
 
 ## Getting Started
@@ -31,7 +32,12 @@ Install/Start SCDF
 # SCDF 
 
 
+
+
 ## SCDF Setup
+
+
+``````
 
 ```shell
 open http://localhost:9393/dashboard

@@ -25,6 +25,17 @@ if [ ! -f "runtime/scdf/spring-cloud-dataflow-shell-2.11.5.jar" ]; then
     wget --directory-prefix=runtime/scdf https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-dataflow-shell/2.11.5/spring-cloud-dataflow-shell-2.11.5.jar
 fi
 
+if [ ! -f "runtime/scdf/jdbc-sql-processor-0.0.1-SNAPSHOT.jar" ]; then
+    wget --directory-prefix=runtime/scdf https://github.com/ggreen/event-streaming-showcase/releases/download/event-streaming-showcase-3-7-2025/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
+fi
+
+if [ ! -f "runtime/scdf/jdbc-upsert-0.2.0-SNAPSHOT.jar" ]; then
+    wget --directory-prefix=runtime/scdf https://github.com/ggreen/event-streaming-showcase/releases/download/event-streaming-showcase-3-7-2025/jdbc-upsert-0.2.0-SNAPSHOT.jar
+fi
+
+
+
+
 
 # Start Skipper
 export ROOT_DIR=`pwd`
@@ -36,6 +47,12 @@ java -jar $ROOT_DIR/runtime/scdf/spring-cloud-skipper-server-2.11.5.jar  --loggi
 java -jar $ROOT_DIR/runtime/scdf/spring-cloud-dataflow-server-2.11.5.jar --logging.file.path=runtime/logs/scdf.log &
 
 
-#Open Dashboard
 
-#open http://localhost:9393/dashboard
+#Install customs applications
+
+
+echo app register --name upsert --force --bootVersion 3 --type sink --uri file://$PWD/runtime/scdf/jdbc-upsert-0.2.0-SNAPSHOT.jar > deployments/local/spring/scdf/install-sql.scdf
+
+java -jar runtime/scdf/spring-cloud-dataflow-shell-2.11.5.jar --spring.shell.historySize=0 --spring.shell.commandFile=deployments/local/spring/scdf/install-sql.scdf
+
+
