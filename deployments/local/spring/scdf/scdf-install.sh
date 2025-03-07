@@ -53,6 +53,8 @@ java -jar $ROOT_DIR/runtime/scdf/spring-cloud-dataflow-server-2.11.5.jar --loggi
 
 echo app register --name upsert --force --bootVersion 3 --type sink --uri file://$PWD/runtime/scdf/jdbc-upsert-0.2.0-SNAPSHOT.jar > deployments/local/spring/scdf/install-sql.scdf
 
+echo app register --name upsert --force --bootVersion 3 --type processor --uri file://$PWD/runtime/scdf/jdbc-sql-processor-0.0.1-SNAPSHOT.jar >> deployments/local/spring/scdf/install-sql.scdf
+
 java -jar runtime/scdf/spring-cloud-dataflow-shell-2.11.5.jar --spring.shell.historySize=0 --spring.shell.commandFile=deployments/local/spring/scdf/install-sql.scdf
 
 

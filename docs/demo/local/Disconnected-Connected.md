@@ -15,12 +15,51 @@ Start Gemfire
 ./deployments/local/dataServices/gemfire/start-docker-gemfire.sh
 ```
 
+Start Postgres
+
+```sql
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres:2.3.3.Final
+```
+
+Connect to Postgres database using psql
+
+```shell
+docker exec -it postgres psql -d postgres -U postgres
+```
+
+Create table
+
+```shell
+CREATE TABLE vehicle_orders (
+    order_id    serial primary key,
+    vin varchar(255) not null,
+    order_item varchar(255) not null,
+    order_dt timestamp default current_timestamp
+);
+```
+
+
+```shell
+SELECT * FROM pg_stat_activity;
+```
+Test
+
+```sql
+insert into vehicle_orders(vin, order_item) values('TESTVIN',
+'TEST ORDER');
+
+select * from vehicle_orders;
+```
+
 Start Vehicle
 
 ```shell
 java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="localhost[3010]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3
 ```
 
+```shell
+open http://localhost:7013
+```
 
 Install/Start SCDF
 
@@ -37,7 +76,6 @@ Install/Start SCDF
 ## SCDF Setup
 
 
-``````
 
 ```shell
 open http://localhost:9393/dashboard
@@ -56,7 +94,23 @@ Click Streams -> Create STREAM(S)
 Paste the following definition
 
 ```shell
-check-engine-light=gemfire: geode --region-name=Vehicle --query="select * from /Vehicle where checkEngine=true" --pdx-read-serialized=true --subscription-enabled=true | log
+check-engine-light=gemfire: geode --region-name=Vehicle --query="select * from /Vehicle where checkEngine=true" --pdx-read-serialized=true --subscription-enabled=true | greenplum:upsert
+```
+
+
+```properties
+app.gemfire.geode.client.pdx-read-serialized=true
+app.gemfire.geode.pool.subscription-enabled=true
+app.gemfire.geode.region.region-name=Vehicle
+app.gemfire.geode.supplier.query=select * from /Vehicle where checkEngine=true
+app.greenplum.jdbc.upsert.insert-sql=insert into vehicle_orders(vin, order_item) values(:vin,'SYNTHETIC OIL')
+app.greenplum.spring.datasource.driver-class-name=org.postgresql.Driver
+app.greenplum.spring.datasource.url=jdbc:postgresql://localhost/postgres
+app.greenplum.spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+app.greenplum.spring.datasource.username=postgres
+app.greenplum.spring.datasource.password=postgres
+deployer.gemfire.bootVersion=2
+deployer.greenplum.bootVersion=3
 ```
 
 

@@ -1,1 +1,2 @@
 app register --name upsert --force --bootVersion 3 --type sink --uri file:///Users/Projects/solutions/ioT/dev/IoT-connected-vehicles-showcase/runtime/scdf/jdbc-upsert-0.2.0-SNAPSHOT.jar
+app register --name upsert --force --bootVersion 3 --type processor --uri file:///Users/Projects/solutions/ioT/dev/IoT-connected-vehicles-showcase/runtime/scdf/jdbc-sql-processor-0.0.1-SNAPSHOT.jar
