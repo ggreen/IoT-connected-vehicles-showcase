@@ -1,3 +1,13 @@
+# Demo
+
+
+
+The demo currently saves order records to Postgres when a change oil indicator is turned on.  
+
+The vehicle details and change oil status are sames in an embedded GemFire. They are synced to a different GemFire instance. The events from the GemFire car instance survives outage/networks issues with a central GemFire instance. SCDF is used to sync data from GemFire central instance to Postgres. Postgres can be replaced with Greenplum.
+
+
+
 
 ## Prerequisite
 
