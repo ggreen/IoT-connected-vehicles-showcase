@@ -13,9 +13,12 @@ import java.util.concurrent.ThreadFactory;
 public class DrivingConfig {
 
     @Bean
-    VehicleEngine vehicleEngine(@Value("${vehicle.distanceIncrements}") Double distanceIncrements, @Value("${vehicle.vin}") String vin)
+    VehicleEngine vehicleEngine(@Value("${vehicle.distanceIncrements}") Double distanceIncrements,
+                                @Value("${vehicle.vin}") String vin,
+                                @Value("${position.latitude}") double latitude,
+                                @Value("${position.longitude}") double longitude)
     {
-        return new VehicleEngine(distanceIncrements,vin);
+        return new VehicleEngine(distanceIncrements,vin,latitude,longitude);
     }
     @Bean
     Thread drivingThread(SelfDrivingService service){

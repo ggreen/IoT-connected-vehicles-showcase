@@ -107,6 +107,8 @@ public class GemFireConfig {
         log.info("********************* startLocators: {}",startLocators);
 
         IO.mkdir(workingDirectory);
+        IO.delete(Paths.get(workingDirectory+"/vf.gf.server.pid").toFile());
+
         setProperty("gemfire.remote-locators",remoteLocators);
         setProperty("gemfire.GatewaySender.REMOVE_FROM_QUEUE_ON_EXCEPTION","false");
         setProperty("jmx-manager-port",jmxManagerPort);

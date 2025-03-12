@@ -22,6 +22,7 @@ The vehicle details and change oil status are sames in an embedded GemFire. They
 Start Gemfire
 
 ```shell
+docker network create gemfire-cache --driver bridge
 ./deployments/local/dataServices/gemfire/start-docker-gemfire.sh
 ```
 
@@ -64,7 +65,7 @@ select * from vehicle_orders;
 Start Vehicle
 
 ```shell
-java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="localhost[3010]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3
+java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="localhost[3010]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3 --position.latitude=36.33282855329259 --position.longitude=-75.60540243388559
 ```
 
 ```shell
@@ -96,6 +97,10 @@ open http://localhost:7010
 # SCDF
 
 ## SCDF Setup
+
+```shell
+./deployments/local/spring/scdf/scdf-install.sh 
+```
 
 
 

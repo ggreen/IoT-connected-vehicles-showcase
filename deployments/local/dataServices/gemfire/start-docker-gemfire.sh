@@ -1,5 +1,5 @@
 
-docker network create gemfire-cache --driver bridge
+
 
 # Run Locator
 #docker run -d -e 'ACCEPT_TERMS=y' --rm --name gf-locator --network=gemfire-cache -p 10334:10334 -p 7070:7070 gemfire/gemfire:10.1.2-jdk17 gfsh start locator --name=locator1

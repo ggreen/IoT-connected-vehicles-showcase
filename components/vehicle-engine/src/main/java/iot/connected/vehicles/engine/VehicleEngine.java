@@ -3,6 +3,7 @@ package iot.connected.vehicles.engine;
 import com.vmware.tanzu.data.IoT.vehicles.domains.GpsLocation;
 import com.vmware.tanzu.data.IoT.vehicles.domains.Vehicle;
 import nyla.solutions.core.patterns.creational.Creator;
+import nyla.solutions.core.util.Digits;
 
 import java.util.Random;
 
@@ -30,10 +31,18 @@ public class VehicleEngine implements Creator<Vehicle> {
     private final Long odometer = new Random().nextLong(15000,500000);
     private final Double distanceIncrements;
     private final String vin;
+    private final Double defaultLatitude;
+    private final Double defaultLongitude;
 
     public VehicleEngine(Double distanceIncrements, String vin) {
+        this(distanceIncrements,vin,null,null);
+    }
+
+    public VehicleEngine(Double distanceIncrements, String vin, Double latitude, Double longitude) {
         this.distanceIncrements = distanceIncrements;
         this.vin = vin;
+        this.defaultLatitude = latitude;
+        this.defaultLongitude = longitude;
     }
 
     /**
@@ -41,8 +50,15 @@ public class VehicleEngine implements Creator<Vehicle> {
      * @return the initialized vehicle
      */
     public Vehicle create() {
-        var latitude = new Random().nextDouble(minLatitude,maxLatitude);
-        var longitude = new Random().nextDouble(minLongitude, maxLongitude);
+        Double latitude = this.defaultLatitude;
+
+        if(latitude ==null)
+            latitude =  new Random().nextDouble(minLatitude,maxLatitude);
+
+        var longitude = this.defaultLongitude;
+
+        if(longitude == null)
+            longitude = new Random().nextDouble(minLongitude, maxLongitude);
 
         var latLong = getFinalLatLong(latitude,longitude, distanceIncrements);
 

@@ -16,6 +16,8 @@ class VehicleEngineTest {
     private VehicleEngine subject;
     private Double distanceIncrements = 0.2;
     private String vin = "junit";
+    private Double latitude = 37.58388784106871;
+    private Double longitude = -71.29707193977676;
 
     @BeforeEach
     void setUp() {
@@ -30,6 +32,15 @@ class VehicleEngineTest {
         assertThat(false).isEqualTo(actual.isCheckEngine());
     }
 
+    @Test
+    void createWithLatLong() {
+        subject = new VehicleEngine(0.0,vin,latitude,longitude);
+
+        var actual = subject.create();
+
+        assertThat(latitude).isEqualTo(actual.getGpsLocation().getLatitude());
+        assertThat(longitude).isEqualTo(actual.getGpsLocation().getLongitude());
+    }
 
     @Test
     void move() {
