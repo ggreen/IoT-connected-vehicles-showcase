@@ -73,11 +73,9 @@ public class GemFireConfig {
     @Value("${gemfire.distributedSystemId:2}")
     private String distributedSystemId;
 
-    @Value("${gemfire.sender.id:vehicle-sender}")
-    private String senderId;
 
-    @Value("${gemfire.gateway.diskStore:vehicle-sender}")
-    private String gatewayDiskStore;
+    @Value("${gemfire.gateway.disk.store.name:vehicle-sender}")
+    private String gatewayDiskStoreName;
 
     @Value("${gemfire.gateway.sender.name:vehicle-sender}")
     private String gatewaySenderName;
@@ -202,14 +200,9 @@ public class GemFireConfig {
     @Bean
     DiskStore gatewayDiskStore(Cache cache,DiskStoreFactory diskStoreFactory)
     {
-        return diskStoreFactory.create(gatewayDiskStore);
+        return diskStoreFactory.create(gatewayDiskStoreName);
     }
 
-    @Bean
-    DiskStore gatewayDiskStoreNameDiskStore(Cache cache, DiskStoreFactory diskStoreFactory)
-    {
-        return diskStoreFactory.create(gatewayDiskStore);
-    }
 
     @Bean
     DiskStore partitionedPersistedDiskStore(Cache cache, DiskStoreFactory diskStoreFactory)
