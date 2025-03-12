@@ -1,9 +1,7 @@
 #!/bin/bash
 
-docker network create tanzu
-
 # Run RabbitMQ (user/bitnami)
-docker run --name rabbitmq01  --network tanzu -d --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  bitnami/rabbitmq:4.0.4
+docker run --name rabbitmq  --network tanzu -d --rm -e RABBITMQ_MANAGEMENT_ALLOW_WEB_ACCESS=true -p 5672:5672 -p 5552:5552 -p 15672:15672  -p  1883:1883  bitnami/rabbitmq:4.0.4
 
 # Start SCDF
 
@@ -50,6 +48,10 @@ java -jar $ROOT_DIR/runtime/scdf/spring-cloud-dataflow-server-2.11.5.jar --loggi
 
 #Install customs applications
 
+while ! netstat -tna | grep 'LISTEN' | grep '9393'; do
+  echo waiting
+  sleep 10
+done
 
 echo app register --name upsert --force --bootVersion 3 --type sink --uri file://$PWD/runtime/scdf/jdbc-upsert-0.2.0-SNAPSHOT.jar > deployments/local/spring/scdf/install-sql.scdf
 

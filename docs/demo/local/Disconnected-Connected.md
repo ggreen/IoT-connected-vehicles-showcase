@@ -97,7 +97,7 @@ open http://localhost:7013
 ```
 
 
-Start Vehicle Dashboard
+Start Dashboard
 
 ```shell
 docker run  --rm  --name dashboard --network=gemfire-cache  -p 7010:7010 cloudnativedata/vehicle-dashboard:0.0.1-SNAPSHOT --server.port=7010 --spring.profiles.active=gemfire --spring.data.gemfire.pool.default.locators="gf-locator[10334]"
@@ -129,11 +129,20 @@ port=7070
 ## Install/Start SCDF
 
 ```shell
+docker network create tanzu
 ./deployments/local/spring/scdf/scdf-install.sh 
 ```
 
 -----------------------------------
 # SCDF
+
+
+Add the following to your /etc/host
+
+```text
+127.0.0.1       gf-locator
+127.0.0.1       gf-server1
+```
 
 ## SCDF Setup
 
@@ -170,6 +179,7 @@ app.gemfire.geode.pool.subscription-enabled=true
 app.gemfire.geode.region.region-name=Vehicle
 app.gemfire.geode.supplier.query=select * from /Vehicle where checkEngine=true
 app.greenplum.jdbc.upsert.insert-sql=insert into vehicle_orders(vin, order_item) values(:vin,'SYNTHETIC OIL')
+app.greenplum.jdbc.upsert.update-sql=update vehicle_orders set  order_item = 'SYNTHETIC OIL'  where vin = :vin
 app.greenplum.spring.datasource.driver-class-name=org.postgresql.Driver
 app.greenplum.spring.datasource.url=jdbc:postgresql://localhost/postgres
 app.greenplum.spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
@@ -202,6 +212,79 @@ Tight light on/off to trigger event to save an oil order to Postgres
 ![turn-light.png](image/turn-light.png)
 
 
+## Disconnected
+
+Simulate network outages
+
+```shell
+docker rm -f gf-server1
+docker rm -f gf-locator
+```
+
+Open Dash Boards
+
+See error
+
+
+Tight light on/off to trigger event to save an oil order to Postgres
+
+
+Fix network issues
+
+```shell
+./deployments/local/dataServices/gemfire/start-docker-gemfire.sh
+```
+
+
+## Change ORder
+
+
+Turn off engine lights
+
+
+Reset order data
+
+```sql
+delete from vehicle_orders where order_item = 'SYNTHETIC OIL';
+select * from vehicle_orders;
+```
+
+
+Update Data Flow
+
+
+Destroy previous "check-engine-light" stream 
+
+```shell
+check-engine-light-v2=gemfire: geode --region-name=Vehicle --query="select * from /Vehicle where checkEngine=true" --pdx-read-serialized=true --subscription-enabled=true | greenplum:upsert
+```
+
+
+
+```properties
+app.gemfire.geode.client.pdx-read-serialized=true
+app.gemfire.geode.pool.subscription-enabled=true
+app.gemfire.geode.region.region-name=Vehicle
+app.gemfire.geode.supplier.query=select * from /Vehicle where checkEngine=true
+app.greenplum.jdbc.upsert.insert-sql=insert into vehicle_orders(vin, order_item) values(:vin,'SYNTHETIC OIL V2')
+app.greenplum.jdbc.upsert.update-sql=update vehicle_orders set  order_item = 'SYNTHETIC OIL V2'  where vin = :vin
+app.greenplum.spring.datasource.driver-class-name=org.postgresql.Driver
+app.greenplum.spring.datasource.url=jdbc:postgresql://localhost/postgres
+app.greenplum.spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+app.greenplum.spring.datasource.username=postgres
+app.greenplum.spring.datasource.password=postgres
+deployer.gemfire.bootVersion=2
+deployer.greenplum.bootVersion=3
+```
+
+
+Select data
+
+```sql
+select * from vehicle_orders;
+```
+
+Turn check engine light
 
 ------------
 
