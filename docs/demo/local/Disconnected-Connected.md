@@ -26,6 +26,18 @@ docker network create gemfire-cache --driver bridge
 ./deployments/local/dataServices/gemfire/start-docker-gemfire.sh
 ```
 
+
+Start GemFire management console
+
+```shell
+./deployments/local/dataServices/gemfire/start-gideon-docker.sh
+```
+
+```shell
+open http://localhost:7077
+```
+
+
 Start Postgres
 
 ```sql
@@ -62,13 +74,7 @@ insert into vehicle_orders(vin, order_item) values('TESTVIN',
 select * from vehicle_orders;
 ```
 
-Start Vehicle
-
-```shell
-java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="127.0.0.1[3013]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3 --gemfire.jmx.host.name.for.clients=host.docker.internal --gemfire.host.name.for.clients=host.docker.internal  --gemfire.http.service.port=7073 --position.latitude=36.33282855329259 --position.longitude=-75.60540243388559
-```
-
-Running in Docker
+Start Vehicle  Running in Docker
 
 Start 002
 
@@ -94,7 +100,7 @@ open http://localhost:7013
 Start Vehicle Dashboard
 
 ```shell
-java -jar applications/vehicle-dashboard/target/vehicle-dashboard-0.0.1-SNAPSHOT.jar --spring.profiles.active=gemfire
+docker run  --rm  --name dashboard --network=gemfire-cache  -p 7010:7010 cloudnativedata/vehicle-dashboard:0.0.1-SNAPSHOT --server.port=7010 --spring.profiles.active=gemfire --spring.data.gemfire.pool.default.locators="gf-locator[10334]"
 ```
 
 Open dashboard
@@ -103,6 +109,29 @@ Open dashboard
 open http://localhost:7010
 ```
 
+
+Setup GMC
+
+```shell
+http://localhost:7077/login
+```
+
+connect
+
+```properties
+name=gemfire-cluster
+host=gf-locator
+port=7070
+```
+
+
+connect
+
+```properties
+name=ship003
+host=vin003
+port=7072
+```
 
 
 ## Install/Start SCDF

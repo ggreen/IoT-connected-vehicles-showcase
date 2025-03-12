@@ -1,0 +1,1 @@
+docker run  -it --rm --network=gemfire-cache -p 7077:7077 -e server.port=7077   gemfire/gemfire-management-console:1.3.1
