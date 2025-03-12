@@ -24,6 +24,9 @@ public class Vehicle {
     }
 
     public void setId(String id) {
+        if(id == null || id.isEmpty())
+            return;
+
         this.vin = id;
     }
 }

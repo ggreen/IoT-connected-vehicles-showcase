@@ -24,6 +24,22 @@ class VehicleEngineTest {
         subject = new VehicleEngine(distanceIncrements,vin);
     }
 
+
+    @Test
+    void emptyId() {
+
+        String expectedVin = "vin";
+
+        var vehicle = new Vehicle();
+        vehicle.setVin(expectedVin);
+
+        vehicle.setId("");
+        assertThat(expectedVin).isEqualTo(vehicle.getId());
+
+        vehicle.setId(null);
+        assertThat(expectedVin).isEqualTo(vehicle.getId());
+    }
+
     @Test
     void create() {
         Vehicle actual = subject.create();

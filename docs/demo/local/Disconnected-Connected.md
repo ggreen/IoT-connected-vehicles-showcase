@@ -65,7 +65,25 @@ select * from vehicle_orders;
 Start Vehicle
 
 ```shell
-java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="localhost[3010]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3 --position.latitude=36.33282855329259 --position.longitude=-75.60540243388559
+java -jar applications/server/vehicle-server/target/vehicle-server-0.0.1-SNAPSHOT.jar --vehicle.vin=vin002 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="127.0.0.1[3013]" --gemfire.working.dir=runtime/vin003 --gemfire.distributedSystemId=3 --gemfire.jmx.host.name.for.clients=host.docker.internal --gemfire.host.name.for.clients=host.docker.internal  --gemfire.http.service.port=7073 --position.latitude=36.33282855329259 --position.longitude=-75.60540243388559
+```
+
+Running in Docker
+
+Start 002
+
+```shell
+docker run  --rm  --name vin002 --network=gemfire-cache  -p 7012:7012 cloudnativedata/vehicle-server:0.0.1-SNAPSHOT  --vehicle.vin=vin002 --server.port=7012 --gemfire.jmx.manager.port=20392 --gemfire.server.port=20302 --gemfire.startLocators="vin002[3012]" --gemfire.bind.address=vin002 --gemfire.jmx.host.name.for.clients=vin002 --gemfire.host.name.for.clients=vin002 --gemfire.working.dir=runtime/vin002 --position.latitude=36.587874310729106 --position.longitude=-74.67391992563381 --gemfire.distributedSystemId=2 --gemfire.http.service.port=7072 --gemfire.remoteLocators="gf-locator[10334]"
+```
+
+```shell
+open http://localhost:7012
+```
+
+Start 003
+
+```shell
+docker run  --rm  --name vin003 --network=gemfire-cache -p 7013:7013 cloudnativedata/vehicle-server:0.0.1-SNAPSHOT  --vehicle.vin=vin003 --server.port=7013 --gemfire.jmx.manager.port=20399 --gemfire.server.port=20300 --gemfire.startLocators="vin003[3013]" --gemfire.bind.address=vin003 --gemfire.jmx.host.name.for.clients=vin003 --gemfire.host.name.for.clients=vin003 --gemfire.working.dir=runtime/vin003 --position.latitude=37.58388784106871 --position.longitude=-71.29707193977676 --gemfire.distributedSystemId=3 --gemfire.http.service.port=7072 --gemfire.remoteLocators="gf-locator[10334]"
 ```
 
 ```shell
@@ -164,3 +182,11 @@ Tight light on/off to trigger event to save an oil order to Postgres
 
 
 
+------------
+
+# Clean up
+
+```shell
+docker rm -f gf-server1
+docker rm -f gf-locator
+```

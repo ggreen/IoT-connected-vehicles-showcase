@@ -88,6 +88,19 @@ public class GemFireConfig {
     @Value("${gemfire.jmx.manager.port:20199}")
     private String jmxManagerPort;
 
+    @Value("${gemfire.bind.address:127.0.0.1}")
+    private String bindAddress;
+
+    @Value("${gemfire.http.service.port}")
+    private String httpServicePort;
+
+    @Value("${gemfire.jmx.host.name.for.clients:127.0.0.1}")
+    private String jmxHostNameForClients;
+
+    @Value("${gemfire.host.name.for.clients:127.0.0.1}")
+    private String hostNameForClients;
+
+
     @Bean
     Cache cacheFactory(ServerLauncher launcher)
     {
@@ -118,13 +131,17 @@ public class GemFireConfig {
                 .setMemberName(serverName)
                 .setServerPort(serverPort)
                 .setPdxDiskStore(pdxDataStoreName)
+                .setHostNameForClients(hostNameForClients)
                 .set("remote-locators",remoteLocators)
                 .set("statistic-sampling-enabled","true")
                 .set("statistic-archive-file",workingDirectory+"/"+statisticArchiveFile)
                 .set("archive-disk-space-limit",archiveDiskSpaceLimit)
                 .set("archive-file-size-limit",archiveFileSizeLimit)
                 .set("distributed-system-id", distributedSystemId)
-                .set("bind-address","127.0.0.1")
+                .set("bind-address",bindAddress)
+                .setServerBindAddress(bindAddress)
+                .set("jmx-manager-hostname-for-clients",jmxHostNameForClients)
+                .set("http-service-port",httpServicePort)
                 .setPdxReadSerialized(readPdxSerialized)
                 .setPdxSerializer(pdxSerializer)
                 .setPdxPersistent(true)
