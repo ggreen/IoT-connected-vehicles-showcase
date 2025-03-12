@@ -234,6 +234,15 @@ open http://localhost:7010
 # Testing Ordering
 
 
+Open RabbitMQ Dashboard
+
+user/bitnami
+
+```shell
+open http://localhost:15672/#/connections
+```
+
+
 Turn Check Engine On
 
 ```shell
